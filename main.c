@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 09:52:11 by epolitze          #+#    #+#             */
-/*   Updated: 2024/04/30 17:04:53 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/04/30 17:52:14 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,30 @@ void	*routine()
 	return (NULL);
 }
 
-//void	create_philosopher()
-//{
-//
-//}
+void	create_philosopher(char **av, int philo_id)
+{
+	t_philo	philo;
+
+	philo.id = philo_id;
+	philo.fork = true;
+	philo.eat_time = 0;
+	philo.sleep_time = 0;
+//	pthread_create(&philo, NULL, &routine, NULL);
+//	pthread_join(philo, NULL);
+}
 
 int	main(int ac, char **av)
 {
-	pthread_t	t1;
-	pthread_t	t2;
-	int			nb_philo;
+	int	nb_philo;
+	int	i;
 
 	if (ac < 5 || ac > 6)
 		return (1);
 	nb_philo = ft_atoi(av[1]);
 	if (nb_philo > 201 || nb_philo < 1)
 		return (1);
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_create(&t2, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
+	i = 0;
+	while (i++ <= nb_philo)
+		create_philosopher(av, i);
 	return (0);
 }
