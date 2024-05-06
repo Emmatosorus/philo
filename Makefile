@@ -1,6 +1,6 @@
 NAME	=	philo
 CC		=	cc
-C_FLAGS	=	-Werror -Wextra -Wall
+C_FLAGS	=	-Werror -Wextra -Wall -g
 
 HDR		=	philo.h
 OBJ_DIR	=	.obj/
@@ -9,7 +9,9 @@ OBJ_DIR	=	.obj/
 
 SRC		= \
 			main.c \
-			utils.c
+			utils.c \
+			parse.c \
+			routine.c
 
 OBJ =	$(SRC:%.c=$(OBJ_DIR)%.o)
 
