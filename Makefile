@@ -1,6 +1,6 @@
 NAME	=	philo
 CC		=	cc
-C_FLAGS	=	-Werror -Wextra -Wall -g
+C_FLAGS	=	-Werror -Wextra -Wall -g -fsanitize=address
 
 HDR		=	philo.h
 OBJ_DIR	=	.obj/
@@ -11,7 +11,10 @@ SRC		= \
 			main.c \
 			utils.c \
 			parse.c \
-			routine.c
+			routine.c \
+			actions.c \
+			mutex_helpers.c \
+			create_philosophers.c
 
 OBJ =	$(SRC:%.c=$(OBJ_DIR)%.o)
 
