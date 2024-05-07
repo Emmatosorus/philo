@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 16:33:08 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/06 17:35:01 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/07 13:44:15 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,20 @@
 
 void	init_main(t_main *main)
 {
-	main->philos = NULL;
+	main->philo_info = NULL;
+	main->philos_threads = NULL;
 	main->forks = NULL;
 	main->end_sim = false;
 	main->start_watching = false;
 	main->threads_ready = 0;
 	main->timestamp = 0;
+	main->nb_meals = -1;
 }
 
 int	get_value(long *var, char *nb)
 {
 	*var = ft_atoi(nb);
-	if (*var < 0 || (*var == 0 && nb[0] != '0'))
+	if (*var < 1 || (*var == 0 && nb[0] != '0') || *var > INT_MAX)
 		return (1);
 	return (0);
 }
