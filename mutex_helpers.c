@@ -6,28 +6,26 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 13:22:55 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 09:26:47 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:23:13 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	get_long(long *value, pthread_mutex_t *lock)
+long	get_long(const long *value, pthread_mutex_t *lock)
 {
-	long	nb;
+	long	var;
 
-	nb = 0;
 	pthread_mutex_lock(lock);
-	nb = *value;
+	var = *value;
 	pthread_mutex_unlock(lock);
-	return (nb);
+	return (var);
 }
 
-bool	get_bool(bool *value, pthread_mutex_t *lock)
+bool	get_bool(const bool *value, pthread_mutex_t *lock)
 {
 	bool	var;
 
-	var = false;
 	pthread_mutex_lock(lock);
 	var = *value;
 	pthread_mutex_unlock(lock);

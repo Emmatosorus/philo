@@ -1,6 +1,6 @@
 NAME	=	philo
 CC		=	cc
-C_FLAGS	=	-Werror -Wextra -Wall -g -fsanitize=address
+C_FLAGS	=	-Werror -Wextra -Wall -g -fsanitize=thread
 
 HDR		=	philo.h
 OBJ_DIR	=	.obj/

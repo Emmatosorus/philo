@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:38:14 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 09:36:30 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 13:09:28 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,13 @@ typedef struct s_main
 	long			threads_ready;
 	long			timestamp;
 	pthread_mutex_t	lock;
+	pthread_mutex_t	write_lock;
 }				t_main;
 
 // #### FUNCTIONS ####
 
 // FILE actions.c
-void	print_msg(char *msg, t_philo *philo);
+void	print_msg(char *msg, t_philo *philo, bool end);
 void	eat(t_philo *philo);
 
 // FILE utils.c
@@ -82,8 +83,8 @@ int		allocate_philosophers(t_main *main);
 int		create_philosophers(t_main *main);
 
 // FILE mutex_helpers.c
-long	get_long(long *value, pthread_mutex_t *lock);
-bool	get_bool(bool *value, pthread_mutex_t *lock);
+long	get_long(const long *value, pthread_mutex_t *lock);
+bool	get_bool(const bool *value, pthread_mutex_t *lock);
 void	set_bool(bool *var, bool value, pthread_mutex_t *lock);
 void	set_long(long *var, long value, pthread_mutex_t *lock);
 
