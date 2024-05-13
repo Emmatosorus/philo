@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 09:52:11 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 09:33:45 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 16:17:47 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	wait_for_launch(t_main *main)
 {
 	while (!get_bool(&main->start_watching, &main->lock))
 	{
-		if (get_long(&main->threads_ready, &main->lock) == get_long(&main->nb_philo, &main->lock))
+		if (get_long(&main->threads_ready, &main->lock) == \
+			get_long(&main->nb_philo, &main->lock))
 		{
 			set_long(&main->timestamp, get_time(), &main->lock);
 			set_bool(&main->start_watching, true, &main->lock);
@@ -35,8 +36,7 @@ void	wait_for_launch(t_main *main)
 
 void	watch(t_main *main)
 {
-	int 	i;
-	long	last_eat;
+	int		i;
 	long	death_time;
 	long	finished;
 
@@ -47,12 +47,20 @@ void	watch(t_main *main)
 		i = -1;
 		while (++i < main->nb_philo)
 		{
-			if (get_long(&main->nb_meals, &main->lock) != -1 && get_long(&main->philo_info[i].nb_eat, &main->philo_info[i].lock) > 0)
+			if (get_long(&main->nb_meals, &main->lock) != -1 && \
+				get_long(&main->philo_info[i].nb_eat, \
+				&main->philo_info[i].lock) <= 0)
 				finished++;
-			last_eat = get_long(&main->philo_info[i].time_since_eat, &main->philo_info[i].lock);
-			if (get_time() - last_eat > death_time || finished == get_long(&main->nb_philo, &main->lock))
+			if (get_time() - get_long(&main->philo_info[i].time_since_eat, \
+				&main->philo_info[i].lock) > death_time)
 			{
-				printf("%ld\t%ld has died\n", get_time(), get_long(&main->philo_info[i].id, &main->philo_info[i].lock));
+				set_bool(&main->end_sim, true, &main->lock);
+				print_msg("has died", &main->philo_info[i], true);
+				break ;
+			}
+			else if (get_long(&main->nb_meals, &main->lock) != -1 && \
+				finished == get_long(&main->nb_philo, &main->lock))
+			{
 				set_bool(&main->end_sim, true, &main->lock);
 				break ;
 			}
@@ -82,5 +90,6 @@ int	main(int ac, char **av)
 	}
 	wait_for_launch(&main);
 	watch(&main);
+	free_main(&main, NULL);
 	return (0);
 }

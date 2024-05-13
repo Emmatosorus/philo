@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 15:10:17 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 09:36:40 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 16:18:54 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ void	*ft_memset(void *s, int c, size_t n)
 
 long	get_time(void)
 {
-	struct	timeval	tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return ((long)tv.tv_usec / 1000);
+	return (((long)tv.tv_sec * 1000) + ((long)tv.tv_usec * 0.001));
 }
 
 void	ft_sleep(long ms)
@@ -62,22 +62,23 @@ void	ft_sleep(long ms)
 	long	start;
 
 	start = get_time();
-	ms *= 1000;
 	while (get_time() - start < ms)
-		usleep(ms / 10);
+		usleep(ms);
 }
 
 void	free_main(t_main *main, char *msg)
 {
-	int	i;
+	int		i;
+	long	nb_p;
 
 	if (msg)
 		printf("%s\n", msg);
 	i = -1;
-	while (++i < main->nb_philo)
+	nb_p = get_long(&main->nb_philo, &main->lock);
+	while (++i < nb_p)
 		pthread_join(main->philos_threads[i], NULL);
 	i = -1;
-	while (++i < main->nb_philo)
+	while (++i < nb_p)
 	{
 		pthread_mutex_destroy(&main->philo_info[i].lock);
 		pthread_mutex_destroy(&main->forks[i].lock);
@@ -89,4 +90,5 @@ void	free_main(t_main *main, char *msg)
 	if (main->philos_threads)
 		free(main->philos_threads);
 	pthread_mutex_destroy(&main->lock);
+	pthread_mutex_destroy(&main->write_lock);
 }
