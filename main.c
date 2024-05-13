@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 09:52:11 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/07 16:26:51 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 09:33:45 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,13 @@ void	print_vars(t_main main)
 
 void	wait_for_launch(t_main *main)
 {
-	while (!main->start_watching)
+	while (!get_bool(&main->start_watching, &main->lock))
 	{
-		pthread_mutex_lock(&main->lock);
-		if (main->threads_ready == main->nb_philo)
-			main->start_watching = true;
-		pthread_mutex_unlock(&main->lock);
+		if (get_long(&main->threads_ready, &main->lock) == get_long(&main->nb_philo, &main->lock))
+		{
+			set_long(&main->timestamp, get_time(), &main->lock);
+			set_bool(&main->start_watching, true, &main->lock);
+		}
 	}
 }
 
@@ -39,22 +40,20 @@ void	watch(t_main *main)
 	long	death_time;
 	long	finished;
 
-	get_long_main(main, &death_time);
+	death_time = get_long(&main->time_to_die, &main->lock);
 	finished = 0;
-	while (is_end(main) != 1)
+	while (!get_bool(&main->end_sim, &main->lock))
 	{
 		i = -1;
 		while (++i < main->nb_philo)
 		{
-			if (main->nb_meals != -1 && finished_eating(&main->philo_info[i]) == 0)
+			if (get_long(&main->nb_meals, &main->lock) != -1 && get_long(&main->philo_info[i].nb_eat, &main->philo_info[i].lock) > 0)
 				finished++;
-			get_long_philo(&main->philo_info[i], &last_eat);
-			if (get_time() - last_eat > death_time || finished == main->nb_philo)
+			last_eat = get_long(&main->philo_info[i].time_since_eat, &main->philo_info[i].lock);
+			if (get_time() - last_eat > death_time || finished == get_long(&main->nb_philo, &main->lock))
 			{
-				printf("%ld\t%d has died\n", get_time(), main->philo_info[i].id);
-				pthread_mutex_lock(&main->lock);
-				main->end_sim = true;
-				pthread_mutex_unlock(&main->lock);
+				printf("%ld\t%ld has died\n", get_time(), get_long(&main->philo_info[i].id, &main->philo_info[i].lock));
+				set_bool(&main->end_sim, true, &main->lock);
 				break ;
 			}
 		}

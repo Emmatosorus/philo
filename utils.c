@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 15:10:17 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/07 16:12:09 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 09:36:40 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	*ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-long	get_time()
+long	get_time(void)
 {
 	struct	timeval	tv;
 
