@@ -6,56 +6,44 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 13:22:55 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/07 16:25:19 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 09:26:47 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	get_long_philo(t_philo *philo, long *nb)
+long	get_long(long *value, pthread_mutex_t *lock)
 {
-	pthread_mutex_lock(&philo->lock);
-	*nb = philo->time_since_eat;
-	pthread_mutex_unlock(&philo->lock);
+	long	nb;
+
+	nb = 0;
+	pthread_mutex_lock(lock);
+	nb = *value;
+	pthread_mutex_unlock(lock);
+	return (nb);
 }
 
-void	get_long_main(t_main *main, long *nb)
+bool	get_bool(bool *value, pthread_mutex_t *lock)
 {
-	pthread_mutex_lock(&main->lock);
-	*nb = main->time_to_die;
-	pthread_mutex_unlock(&main->lock);
+	bool	var;
+
+	var = false;
+	pthread_mutex_lock(lock);
+	var = *value;
+	pthread_mutex_unlock(lock);
+	return (var);
 }
 
-int	is_end(t_main *main)
+void	set_bool(bool *var, bool value, pthread_mutex_t *lock)
 {
-	int	ret;
-
-	ret = 0;
-	pthread_mutex_lock(&main->lock);
-	if (!main->end_sim)
-		ret = 1;
-	pthread_mutex_unlock(&main->lock);
-	return (ret);
+	pthread_mutex_lock(lock);
+	*var = value;
+	pthread_mutex_unlock(lock);
 }
 
-int	finished_eating(t_philo *philo)
+void	set_long(long *var, long value, pthread_mutex_t *lock)
 {
-	int	ret;
-
-	ret = 0;
-	pthread_mutex_lock(&philo->lock);
-	if (philo->nb_eat > 0)
-		ret = 1;
-	pthread_mutex_unlock(&philo->lock);
-	return (ret);
-}
-
-void	unsync_philo(t_philo *philo)
-{
-	if (philo->id % 2)
-	{
-		pthread_mutex_lock(&philo->main_ptr->lock);
-		usleep(philo->main_ptr->time_to_eat / 10);
-		pthread_mutex_unlock(&philo->main_ptr->lock);
-	}
+	pthread_mutex_lock(lock);
+	*var = value;
+	pthread_mutex_unlock(lock);
 }

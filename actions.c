@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 13:57:38 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/07 16:22:25 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 09:28:35 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 
 void	print_msg(char *msg, t_philo *philo)
 {
-	pthread_mutex_lock(&philo->main_ptr->lock);
-	if (!philo->main_ptr->end_sim)
-		printf("%ld\t%d %s\n", get_time(), philo->id, msg);
-	pthread_mutex_unlock(&philo->main_ptr->lock);
+	if (!get_bool(&philo->main_ptr->end_sim, &philo->main_ptr->lock))
+		printf("%ld\t%ld %s\n", get_time(), get_long(&philo->id, &philo->lock), msg);
 }
 
 int	watch_fork(t_fork *fork, t_philo *philo)
@@ -36,16 +34,6 @@ int	watch_fork(t_fork *fork, t_philo *philo)
 	return (ret);
 }
 
-void	put_back_forks(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->l_fork->lock);
-	philo->l_fork->is_taken = false;
-	pthread_mutex_unlock(&philo->l_fork->lock);
-	pthread_mutex_lock(&philo->r_fork->lock);
-	philo->r_fork->is_taken = false;
-	pthread_mutex_unlock(&philo->r_fork->lock);
-}
-
 void	eat(t_philo *philo)
 {
 	while (watch_fork(philo->l_fork, philo) != 1)
@@ -53,11 +41,10 @@ void	eat(t_philo *philo)
 	while (watch_fork(philo->r_fork, philo) != 1)
 		;
 	print_msg("is eating", philo);
-	pthread_mutex_lock(&philo->lock);
-	philo->time_since_eat = get_time();
-	pthread_mutex_unlock(&philo->lock);
+	set_long(&philo->time_since_eat, get_time(), &philo->lock);
 	ft_sleep(philo->main_ptr->time_to_eat);
-	put_back_forks(philo);
+	set_bool(&philo->l_fork->is_taken, false, &philo->l_fork->lock);
+	set_bool(&philo->r_fork->is_taken, false, &philo->r_fork->lock);
 	pthread_mutex_lock(&philo->lock);
 	if (philo->nb_eat > 0)
 		philo->nb_eat--;

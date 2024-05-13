@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:08:12 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/07 14:08:15 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 09:31:38 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,8 @@ int	allocate_philosophers(t_main *main)
 int	create_philosophers(t_main *main)
 {
 	int				i;
-	struct timeval	tv;
 
 	i = -1;
-	pthread_mutex_init(&main->lock, NULL);
-	gettimeofday(&tv, NULL);
-	main->timestamp = (long)tv.tv_usec / 1000;
 	while (++i < main->nb_philo)
 	{
 		main->philo_info[i].id = i + 1;
