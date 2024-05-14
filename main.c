@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 09:52:11 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 16:17:47 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/14 09:08:49 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,32 +34,37 @@ void	wait_for_launch(t_main *main)
 	}
 }
 
+bool	philo_died(t_main *main, int i, long death_time)
+{
+	if (get_time() - get_long(&main->philo_info[i].time_since_eat, \
+				&main->philo_info[i].lock) > death_time)
+	{
+		set_bool(&main->end_sim, true, &main->lock);
+		print_msg("has died", &main->philo_info[i], true);
+		return (true);
+	}
+	return (false);
+}
+
 void	watch(t_main *main)
 {
 	int		i;
 	long	death_time;
 	long	finished;
 
-	death_time = get_long(&main->time_to_die, &main->lock);
+	death_time = main->time_to_die;
 	finished = 0;
 	while (!get_bool(&main->end_sim, &main->lock))
 	{
 		i = -1;
 		while (++i < main->nb_philo)
 		{
-			if (get_long(&main->nb_meals, &main->lock) != -1 && \
-				get_long(&main->philo_info[i].nb_eat, \
+			if (main->nb_meals!= -1 && get_long(&main->philo_info[i].nb_eat, \
 				&main->philo_info[i].lock) <= 0)
 				finished++;
-			if (get_time() - get_long(&main->philo_info[i].time_since_eat, \
-				&main->philo_info[i].lock) > death_time)
-			{
-				set_bool(&main->end_sim, true, &main->lock);
-				print_msg("has died", &main->philo_info[i], true);
+			if (philo_died(main, i, death_time))
 				break ;
-			}
-			else if (get_long(&main->nb_meals, &main->lock) != -1 && \
-				finished == get_long(&main->nb_philo, &main->lock))
+			else if (main->nb_meals != -1 && finished == main->nb_philo)
 			{
 				set_bool(&main->end_sim, true, &main->lock);
 				break ;
@@ -77,7 +82,7 @@ int	main(int ac, char **av)
 		printf("Error\nIncorrect arguments!\n");
 		return (1);
 	}
-	print_vars(main);
+//	print_vars(main);
 	if (allocate_philosophers(&main) != 0)
 	{
 		printf("Error\nMalloc has failed\n");
