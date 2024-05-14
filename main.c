@@ -6,20 +6,11 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 09:52:11 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/14 09:08:49 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/14 09:33:28 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	print_vars(t_main main)
-{
-	printf("Number of philosophers : %ld\n", main.nb_philo);
-	printf("Time until death : %ld\n", main.time_to_die);
-	printf("Time to eat : %ld\n", main.time_to_eat);
-	printf("Time to sleep : %ld\n", main.time_to_sleep);
-	printf("Number of meals : %ld\n", main.nb_meals);
-}
 
 void	wait_for_launch(t_main *main)
 {
@@ -59,7 +50,7 @@ void	watch(t_main *main)
 		i = -1;
 		while (++i < main->nb_philo)
 		{
-			if (main->nb_meals!= -1 && get_long(&main->philo_info[i].nb_eat, \
+			if (main->nb_meals != -1 && get_long(&main->philo_info[i].nb_eat, \
 				&main->philo_info[i].lock) <= 0)
 				finished++;
 			if (philo_died(main, i, death_time))
@@ -82,7 +73,6 @@ int	main(int ac, char **av)
 		printf("Error\nIncorrect arguments!\n");
 		return (1);
 	}
-//	print_vars(main);
 	if (allocate_philosophers(&main) != 0)
 	{
 		printf("Error\nMalloc has failed\n");
