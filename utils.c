@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 15:10:17 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 16:18:54 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/14 09:15:17 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,17 @@ long	get_time(void)
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return (((long)tv.tv_sec * 1000) + ((long)tv.tv_usec * 0.001));
+	return (((long)tv.tv_sec * 1000000) + (long)tv.tv_usec);
 }
 
-void	ft_sleep(long ms)
+inline void	ft_sleep(long us)
 {
 	long	start;
 
 	start = get_time();
-	while (get_time() - start < ms)
-		usleep(ms);
+	usleep(us * 0.8);
+	while ((get_time() - start) < us)
+		usleep(30);
 }
 
 void	free_main(t_main *main, char *msg)

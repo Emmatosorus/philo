@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:38:14 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/13 13:09:28 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/13 16:46:22 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	eat(t_philo *philo);
 int		ft_atoi(const char *str);
 void	*ft_memset(void *s, int c, size_t n);
 long	get_time(void);
-void	ft_sleep(long ms);
+void	ft_sleep(long us);
 void	free_main(t_main *main, char *msg);
 
 // FILE parse.c
