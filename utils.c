@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 15:10:17 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/14 09:15:17 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/15 14:07:00 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,6 @@ int	ft_atoi(const char *str)
 	return (nb * sign);
 }
 
-void	*ft_memset(void *s, int c, size_t n)
-{
-	unsigned char	*ptr;
-
-	ptr = (unsigned char *)s;
-	while (n > 0)
-	{
-		*ptr = c;
-		ptr++;
-		n--;
-	}
-	return (s);
-}
-
 long	get_time(void)
 {
 	struct timeval	tv;
@@ -67,7 +53,7 @@ inline void	ft_sleep(long us)
 		usleep(30);
 }
 
-void	free_main(t_main *main, char *msg)
+void	free_main(t_main *main, char *msg, bool end)
 {
 	int		i;
 	long	nb_p;
@@ -75,11 +61,11 @@ void	free_main(t_main *main, char *msg)
 	if (msg)
 		printf("%s\n", msg);
 	i = -1;
-	nb_p = get_long(&main->nb_philo, &main->lock);
-	while (++i < nb_p)
+	nb_p = main->nb_philo;
+	while (++i < nb_p && end)
 		pthread_join(main->philos_threads[i], NULL);
 	i = -1;
-	while (++i < nb_p)
+	while (++i < nb_p && end)
 	{
 		pthread_mutex_destroy(&main->philo_info[i].lock);
 		pthread_mutex_destroy(&main->forks[i].lock);
@@ -90,6 +76,29 @@ void	free_main(t_main *main, char *msg)
 		free(main->forks);
 	if (main->philos_threads)
 		free(main->philos_threads);
-	pthread_mutex_destroy(&main->lock);
-	pthread_mutex_destroy(&main->write_lock);
+	if (end)
+		pthread_mutex_destroy(&main->lock);
+	if (end)
+		pthread_mutex_destroy(&main->write_lock);
+}
+
+void	mid_loop_free(t_main *main, int i)
+{
+	int	j;
+
+	j = i;
+	set_bool(&main->end_sim, true, &main->lock);
+	while (i >= 0)
+	{
+		pthread_join(main->philos_threads[i], NULL);
+		i--;
+	}
+	i = j;
+	while (i >= 0)
+	{
+		pthread_mutex_destroy(&main->philo_info[i].lock);
+		pthread_mutex_destroy(&main->forks[i].lock);
+		i--;
+	}
+	free_main(main, "pthread function failed", false);
 }

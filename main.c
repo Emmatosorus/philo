@@ -6,7 +6,7 @@
 /*   By: epolitze <epolitze@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 09:52:11 by epolitze          #+#    #+#             */
-/*   Updated: 2024/05/14 09:33:28 by epolitze         ###   ########.fr       */
+/*   Updated: 2024/05/15 11:34:59 by epolitze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,9 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	if (create_philosophers(&main) != 0)
-	{
-		free_main(&main, "Error\nCouldn't create thread");
 		return (1);
-	}
 	wait_for_launch(&main);
 	watch(&main);
-	free_main(&main, NULL);
+	free_main(&main, NULL, 3);
 	return (0);
 }
